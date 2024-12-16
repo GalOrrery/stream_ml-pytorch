@@ -70,9 +70,10 @@ class TruncatedSkewNormal(SkewNormal):
 
         cns, cens = self.coord_names, self.coord_err_names
         x = data[cns].array  # (N, F)
-        _0 = self.xp.zeros_like(x)[None, ...]  # (1, N, F)
 
-        a, b = _0 + self.xp.asarray([self.coord_bounds[k] for k in cns]).T[:, None, :]
+        a_, b_ = self._get_lower_upper_bound(data[self.indep_coord_names].array)
+        a, b = a_[idx], b_[idx]
+        # a, b = _0 + self.xp.asarray([self.coord_bounds[k] for k in cns]).T[:, None, :]
         mu = self._stack_param(mpars, "mu", cns)[idx]
         ln_s = self._stack_param(mpars, "ln-sigma", cns)[idx]
         skew = self._stack_param(mpars, "skew", cns)[idx]
@@ -87,7 +88,7 @@ class TruncatedSkewNormal(SkewNormal):
         # Find where -inf
         with xp.no_grad():
             _lpdf = truncskewnorm_logpdf(
-                x[idx], loc=mu, ln_sigma=ln_s, skew=skew, a=a[idx], b=b[idx], xp=self.xp
+                x[idx], loc=mu, ln_sigma=ln_s, skew=skew, a=a, b=b, xp=self.xp
             )
             fnt = xp.isfinite(_lpdf)  # apply to X[idx] only
 
@@ -98,18 +99,15 @@ class TruncatedSkewNormal(SkewNormal):
             loc=mu[fnt],
             ln_sigma=ln_s[fnt],
             skew=skew[fnt],
-            a=a[idx][fnt],
-            b=b[idx][fnt],
+            a=a[fnt],
+            b=b[fnt],
             xp=self.xp,
         )
 
         # Compute normal where SN is infinite.
         # Subtract 100 b/c that's where the SN logpdf drops to -inf
         n_lnpdf = (
-            truncnorm_logpdf(
-                x[idx], loc=mu, ln_sigma=ln_s, a=a[idx], b=b[idx], xp=self.xp
-            )
-            - 100
+            truncnorm_logpdf(x[idx], loc=mu, ln_sigma=ln_s, a=a, b=b, xp=self.xp) - 100
         )
 
         idxlnliks = xp.where(fnt, sn_lnpdf, n_lnpdf)
