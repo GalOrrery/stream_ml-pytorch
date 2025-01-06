@@ -4,7 +4,7 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = ()
 
-from collections.abc import Callable  # noqa: TCH003
+from collections.abc import Callable  # noqa: TC003
 from dataclasses import KW_ONLY, dataclass
 from typing import TYPE_CHECKING
 

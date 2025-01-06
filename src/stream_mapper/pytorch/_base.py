@@ -13,7 +13,7 @@ from torch import nn
 from stream_mapper.core import ModelBase as CoreModelBase
 from stream_mapper.core._connect.nn_namespace import NN_NAMESPACE
 from stream_mapper.core._connect.xp_namespace import XP_NAMESPACE
-from stream_mapper.core.typing import ArrayNamespace  # noqa: TCH001
+from stream_mapper.core.typing import ArrayNamespace  # noqa: TC001
 from stream_mapper.core.utils.dataclasses import ArrayNamespaceReprMixin
 from stream_mapper.core.utils.scale import names_intersect
 

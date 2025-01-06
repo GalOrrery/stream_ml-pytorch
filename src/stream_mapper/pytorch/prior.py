@@ -8,7 +8,7 @@ from stream_mapper.core import prior
 from stream_mapper.core.prior import *  # noqa: F403
 from stream_mapper.core.prior._track import ControlRegions as CoreControlRegions
 from stream_mapper.core.prior._weight import HardThreshold as CoreHardThreshold
-from stream_mapper.core.typing import ArrayNamespace  # noqa: TCH001
+from stream_mapper.core.typing import ArrayNamespace  # noqa: TC001
 
 from stream_mapper.pytorch.typing import Array
 
